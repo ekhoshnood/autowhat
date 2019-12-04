@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+    <title>This is login</title>
+{% endblock title %}
+
+{%  block body %}
+    <style>
+        .login-box{
+            background: #1d2124;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .h3{
+            color: white;
+        }
+
+    </style>
+
+
+        <div class="col-md-4 offset-md-4 login-box">
+            <br>
+            <form method="post">
+                {% csrf_token %} <!-- this is required for work properly
+                                    this is encryption token, that is like : its a security thing and
+                                    works like if you stay for too long on the form it will expire -->
+                <h2 class="h3" style="text-align: center">Login Form</h2>
+                <div class="illustration">
+                    <i class="icon ion-ios-locked-outline"></i>
+                </div>
+                <div class="form-group">
+                    <input class="form-control" type="email" name="email" placeholder="Email">
+                </div>
+                <div class="form-group">
+                    <input class="form-control" type="password" name="password" placeholder="Password">
+                </div>
+
+                <!-- loop through any potential errors  -->
+                    <!-- how does form knows if it  has errors => if we do a post request => it checks if the form is valid
+                                if is not valid it still adds the form to the context and in that point if the form is not
+                                valid it's gonna have errors -->
+                {% for field in login_form %}
+                    {% for error in field.errors %}
+                        <p style="color: red">{{ error }}</p>
+                    {% endfor %}
+                {% endfor %}
+                <!-- non error field : that is not unique to any particular field in the form like
+                        if the password is bad or the login is bad or any error that is not uniqe to any particular field
+                            like they didnt enter password right so they will get this error-->
+                {% if login_form.non_field_errors %}
+                    <div style="color: red">
+                        <p>{{ login_form.non_field_errors }}</p>
+                    </div>
+                {% endif %}
+                <div class="form-group">
+                    <button class="btn btn-primary btn-block" type="submit">Log In</button>
+                </div>
+                <a href="{% url 'password_reset' %}">Forgot Your password?(Reset Password)</a>
+            </form>
+            <br>
+        </div>
+
+
+{% endblock body %}

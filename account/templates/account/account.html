@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    <title>This is account</title>
+{% endblock title %}
+
+
+
+{%  block body %}
+
+    <style>
+        .login-box{
+            background: #1d2124;
+        }
+        .login-box, .blogpost-card{
+            border-radius: 10px;
+        }
+        .h3{
+            color: white;
+        }
+        .blog-posts{
+            max-width: 500px;
+            width: 100%;
+            margin: auto;
+        }
+        .blogpost-card{
+            background: #1d2124;
+            color: white;
+        }
+    </style>
+
+
+    <div class="col-md-4 offset-md-4 login-box" style="text-align: center">
+        <br>
+        <form method="post">
+            {% csrf_token %} <!-- this is required for work properly
+                                this is encryption token, that is like : its a security thing and
+                                works like if you stay for too long on the form it will expire -->
+            <h2 class="h3" style="text-align: center">Account</h2>
+            <div class="illustration">
+                <i class="icon ion-ios-locked-outline"></i>
+            </div>
+            <div class="form-group">
+                <input class="form-control" type="email" name="email" placeholder="Email" value="{{ account_form.initial.email }}">
+            </div>
+            <div class="form-group">
+                <input class="form-control" type="text" name="username" placeholder="Username" value="{{ account_form.initial.username }}">
+            </div>
+
+            <!-- loop through any potential errors  -->
+                <!-- how does form knows if it  has errors => if we do a post request => it checks if the form is valid
+                            if is not valid it still adds the form to the context and in that point if the form is not
+                            valid it's gonna have errors -->
+            {% for field in account_form %}
+                {% for error in field.errors %}
+                    <p style="color: red">{{ error }}</p>
+                {% endfor %}
+            {% endfor %}
+            <!-- non error field : that is not unique to any particular field in the form like
+                    if the password is bad or the login is bad or any error that is not uniqe to any particular field
+                        like they didnt enter password right so they will get this error-->
+            {% if account_form.non_field_errors %}
+                <div style="color: red">
+                    <p>{{ account_form.non_field_errors }}</p>
+                </div>
+            {% endif %}
+            {% if success_message %}
+                <p style="color: green; text-align: center">{{ success_message }}</p>
+            {% endif %}
+            <div class="form-group">
+                <button class="btn btn-primary btn-block" type="submit">Save Changes</button>
+            </div>
+            <a href="{% url 'password_change' %}">Change Password</a>
+        </form>
+        <br>
+    </div>
+{% endblock body %}
